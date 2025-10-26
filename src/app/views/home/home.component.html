@@ -1,0 +1,31 @@
+ <div class="row g-3">
+    <div class="col-12 col-md-6" >
+      <div style="padding:10px">
+       <div class="p-4 bg-dark border rounded shadow-sm text-center">
+  <h2 class="mb-3 text-danger">Report ICE Agent Misconduct</h2>
+  <p class="mb-0">
+    Upload photos or videos showing ICE agents breaking the law.  
+    Your submissions help build a class-action case and hold abusive officers accountable.  
+    All uploads are encrypted and handled confidentially.
+  </p>
+</div>
+      <app-ngb-slideshow
+        [images]="imageList"
+        [interval]="5000"
+        [wrap]="true"
+        [pauseOnHover]="true"
+        [showNavigationArrows]="true"
+        [showNavigationIndicators]="true">
+      </app-ngb-slideshow>
+
+       
+    </div>
+    </div>
+
+
+
+    <div  class="col-12 col-md-6">
+       <div style="padding:10px">
+ <app-report-upload></app-report-upload></div>
+    </div>
+  </div>

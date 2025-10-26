@@ -1,0 +1,17 @@
+.navbar {
+  padding: 0.6rem 1rem;
+}
+
+.nav-link {
+  cursor: pointer;
+  transition: opacity .2s ease;
+}
+
+.nav-link.active,
+.nav-link:hover {
+  opacity: 0.85;
+}
+
+.dropdown-menu {
+  min-width: 12rem;
+}

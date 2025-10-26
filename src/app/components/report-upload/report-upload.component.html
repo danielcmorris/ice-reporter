@@ -1,0 +1,166 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="container py-3">
+
+    <!-- Contact -->
+    <div class="row g-3">
+        <div class="col-12">
+            <h4 class="mb-0">Report ICE Misconduct</h4>
+            <small class="text-muted">By filling out this form, you help us document and address ICE agent misconduct.
+                Your submissions help build a class-action case and hold abusive officers accountable.
+                All uploads are encrypted and handled confidentially.
+            </small>
+        </div>
+
+        <div class="col-12">
+            <hr class="my-4" />
+            <h5 class="mb-0">Upload Your Photos</h5>
+            <small class="text-muted">You can upload multiple files at once. Accepted formats include images (jpg, png,
+                webp, gif, heic), PDFs, and common video files. Make sure these are specific to the incident and do not
+                include unrelated content.</small>
+        </div>
+        <!-- Drag & Drop Zone -->
+        <div class="dropzone border rounded-3 p-4 text-center" [class.dragging]="isDragging"
+            (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+            <p class="mb-2 fw-semibold">Drag & drop files here</p>
+            <p class="text-muted mb-3">or</p>
+            <label class="btn btn-dark">
+                Choose files
+                <input type="file" multiple hidden (change)="onFileInputChange($event)" />
+            </label>
+            <div class="mt-2 small text-muted">Allowed: images (jpg/png/webp/gif/heic), PDF, and common videos</div>
+        </div>
+
+        <!-- Selected files -->
+        <div class="row g-3 mt-3" *ngIf="files.length">
+            <div class="col-12">
+                <h6 class="mb-0">Files to upload ({{ files.length }})</h6>
+            </div>
+
+            <div class="col-md-3 col-sm-4 col-6" *ngFor="let f of files; index as i">
+                <div class="card h-100">
+                    <div class="ratio ratio-4x3 bg-light d-flex align-items-center justify-content-center">
+                        <img *ngIf="f.previewUrl" [src]="f.previewUrl" alt="preview"
+                            class="img-fluid object-fit-cover p-1" />
+                        <div *ngIf="!f.previewUrl" class="text-muted small px-2">No preview</div>
+                    </div>
+                    <div class="card-body p-2">
+                        <div class="small fw-semibold text-truncate" [title]="f.file.name">{{ f.file.name }}</div>
+                        <div class="small text-muted">{{ (f.file.size / (1024*1024) | number:'1.1-1') }} MB</div>
+                        <button type="button" class="btn btn-sm btn-outline-danger w-100 mt-2" (click)="removeFile(i)">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress & messages -->
+        <div class="mt-4" *ngIf="isSubmitting">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                    [style.width.%]="progress">
+                    {{progress}}%
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-12">
+            <hr class="my-4" />
+            <h5 class="mb-0">Describe the Event</h5>
+            <small class="text-muted">Include as much detail as possible regarding who was hurt and what actions were
+                taken prior to the incident as well as afterwards. Try to relate what happened to the images included
+                (if any)</small>
+        </div>
+
+
+        <!-- Description & Location -->
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="form-label">Description of the Incident <span class="text-danger">*</span></label>
+                <textarea class="form-control" formControlName="description" rows="4"
+                    placeholder="What do these files show? Provide context, time, etc."></textarea>
+                <div class="text-danger small mt-1"
+                    *ngIf="form.get('description')?.touched && form.get('description')?.invalid">
+                    Please enter at least 10 characters.
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <label class="form-label">Location (text)</label>
+                <input class="form-control" formControlName="locationText"
+                    placeholder="Address / intersection / landmark" />
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Latitude</label>
+                <input class="form-control" formControlName="latitude" placeholder="e.g., 37.7749" />
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Longitude</label>
+                <input class="form-control" formControlName="longitude" placeholder="-122.4194" />
+            </div>
+
+            <div class="col-12">
+                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="fillGeoFromBrowser()">
+                    Use my device location
+                </button>
+            </div>
+        </div>
+
+
+        <div class="col-12">
+            <hr class="my-4" />
+            <h5 class="mb-0">Contact Information</h5>
+            <small class="text-muted">For a report to be effective in court, it is critical that the attorneys are able to contact you for more details in the event evidence is to be taken to court.</small>
+        </div>
+
+        <!-- 👇 Put contact controls inside this wrapper -->
+        <div formGroupName="contact" class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">First Name <span class="text-danger">*</span></label>
+                <input class="form-control" formControlName="firstName" />
+                <div class="text-danger small mt-1"
+                    *ngIf="form.get('contact.firstName')?.touched && form.get('contact.firstName')?.invalid">
+                    Name is required (min 2 characters).
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                <input class="form-control" formControlName="lastName" />
+                <div class="text-danger small mt-1"
+                    *ngIf="form.get('contact.lastName')?.touched && form.get('contact.lastName')?.invalid">
+                    Name is required (min 2 characters).
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Email <span class="text-danger">*</span></label>
+                <input class="form-control" formControlName="email" type="email" />
+                <div class="text-danger small mt-1"
+                    *ngIf="form.get('contact.email')?.touched && form.get('contact.email')?.invalid">
+                    A valid email is required.
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Phone</label>
+                <input class="form-control" formControlName="phone" />
+            </div>
+        </div>
+    </div>
+
+    <!-- the rest of your form... -->
+
+
+
+
+    <div class="alert alert-success mt-3" *ngIf="serverMessage">{{ serverMessage }}</div>
+    <div class="alert alert-danger mt-3" *ngIf="serverError">{{ serverError }}</div>
+
+    <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-primary" type="submit" [disabled]="isSubmitting">Submit</button>
+        <button class="btn btn-outline-secondary" type="button" [disabled]="isSubmitting"
+            (click)="form.reset()">Reset</button>
+    </div>
+</form>
