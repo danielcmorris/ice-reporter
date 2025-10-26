@@ -61,7 +61,7 @@ import { NgbSlideLike } from '../../models/image';
   >
     <ng-template ngbSlide *ngFor="let s of normalized; let i = index" [id]="'slide-' + i">
       <figure class="m-0 position-relative">
-        <img class="w-100 d-block" [src]="s.src" [alt]="s.alt || ''" loading="lazy" decoding="async"/>
+        <img class="w-100 d-block" [src]="s.src" [alt]="s.alt || ''" loading="eager" decoding="async"/>
         <figcaption *ngIf="s.caption || s.header" 
           class="carousel-caption overlay-caption d-none d-md-block text-start">
           <h5 *ngIf="s.header">{{ s.header }}</h5>
